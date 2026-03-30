@@ -1,8 +1,17 @@
 import BookItem from "../bookItem/BookItem";
 import { useState } from "react";
+import BookSearch from "../booksSearch/BooksSearch";
+
 const Books = ({ books }) => {
   const [selectedBook, setSelectedBook] = useState("");
+  const [bookSearch, setBookSearch] = useState("");
+  const handleBookSearch = (book) => {
+    setBookSearch(book);
+  };
 
+  const booksToShow = books.filter((book) =>
+    book.title.toLowerCase().includes(bookSearch.toLowerCase())
+  );
   return (
     <>
       {selectedBook && (
@@ -10,8 +19,9 @@ const Books = ({ books }) => {
           El libro seleccionado es: <b>{selectedBook}</b>
         </p>
       )}
+      <BookSearch onFindBook={handleBookSearch} value={bookSearch} />
       <div className="d-flex justify-content-center flex-wrap">
-        {books.map((book) => (
+        {booksToShow.map((book) => (
           <BookItem
             key={book.id}
             title={book.title}
