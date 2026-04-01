@@ -21,18 +21,22 @@ const Books = ({ books }) => {
       )}
       <BookSearch onFindBook={handleBookSearch} value={bookSearch} />
       <div className="d-flex justify-content-center flex-wrap">
-        {booksToShow.map((book) => (
-          <BookItem
-            key={book.id}
-            title={book.title}
-            author={book.author}
-            rating={book.rating}
-            pageCount={book.pageCount}
-            imageUrl={book.imageUrl}
-            available={book.available}
-            onSelectedBook={setSelectedBook}
-          />
-        ))}
+        {booksToShow.length > 0 ? (
+          booksToShow.map((book) => (
+            <BookItem
+              key={book.id}
+              title={book.title}
+              author={book.author}
+              rating={book.rating}
+              pageCount={book.pageCount}
+              imageUrl={book.imageUrl}
+              available={book.available}
+              onSelectedBook={setSelectedBook}
+            />
+          ))
+        ) : (
+          <h2>No se encontraron lecturas con ese nombre</h2>
+        )}
       </div>
     </>
   );
