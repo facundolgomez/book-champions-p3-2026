@@ -1,7 +1,8 @@
-import BookItem from "./components/bookItem/BookItem";
-import NewBook from "./components/newBook/NewBook";
-import Books from "./components/books/Books";
+import BookItem from "./components/library/bookItem/BookItem";
+import NewBook from "./components/library/newBook/NewBook";
+import Books from "./components/library/books/Books";
 import { useState } from "react";
+import Login from "./components/auth/login/Login";
 function App() {
   const books = [
     {
@@ -66,10 +67,11 @@ function App() {
 
   return (
     <div className="d-flex flex-column align-items-center">
-      <h2>Books champion app</h2>
+      {/* <h2>Books champion app</h2>
       <p>¡Quiero leer libros!</p>
       <NewBook onBookAdded={handleBookAdded} />
-      <Books books={bookList} />
+      <Books books={bookList} /> */}
+      <Login />
     </div>
   );
 }
