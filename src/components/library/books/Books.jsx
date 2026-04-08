@@ -10,7 +10,7 @@ const Books = ({ books, onBookDeleted }) => {
   };
 
   const booksToShow = books.filter((book) =>
-    book.title.toLowerCase().includes(bookSearch.toLowerCase())
+    book.title.toLowerCase().includes(bookSearch.toLowerCase()),
   );
   return (
     <>
@@ -30,6 +30,7 @@ const Books = ({ books, onBookDeleted }) => {
               author={book.author}
               rating={book.rating}
               pageCount={book.pageCount}
+              summary={book.summary}
               imageUrl={book.imageUrl}
               available={book.available}
               onSelectedBook={setSelectedBook}

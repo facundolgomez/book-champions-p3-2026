@@ -9,21 +9,22 @@ function App() {
   const handleLogIn = () => {
     setLoggedIn(true);
   };
+
+  const handleLogOut = () => {
+    setLoggedIn(false);
+  };
   return (
     <div>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Navigate to="login" />} />
           <Route path="login" element={<Login onLogin={handleLogIn} />} />
-          <Route
-            path="library"
-            element={
-              <Protected isSignedIn={loggedIn}>
-                {" "}
-                <Dashboard />
-              </Protected>
-            }
-          />
+          <Route element={<Protected isSignedIn={loggedIn} />}>
+            <Route
+              path="/library/*"
+              element={<Dashboard onLogOut={handleLogOut} />}
+            />
+          </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

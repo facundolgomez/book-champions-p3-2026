@@ -2,12 +2,14 @@ import { Badge, Card, Button } from "react-bootstrap";
 import { useState } from "react";
 import { Star, StarFill } from "react-bootstrap-icons";
 import MyModal from "../../ui/modal/MyModal";
+import { useNavigate } from "react-router";
 const BookItem = ({
   id,
   title,
   author,
   rating,
   pageCount,
+  summary,
   imageUrl,
   available,
   onSelectedBook,
@@ -15,11 +17,22 @@ const BookItem = ({
 }) => {
   const [newTitle, setNewTitle] = useState(title);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    setNewTitle(newTitle);
-    console.log(newTitle);
-    onSelectedBook(newTitle);
+    navigate(`${id}`, {
+      state: {
+        book: {
+          title,
+          author,
+          rating,
+          pageCount,
+          summary,
+          imageUrl,
+          available,
+        },
+      },
+    });
   };
 
   const handleConfirmDelete = () => {
@@ -51,7 +64,7 @@ const BookItem = ({
                 <StarFill key={index} className="text-warning" />
               ) : (
                 <Star key={index} className="text-warning" />
-              )
+              ),
             )}
           </div>
           <p>{pageCount} páginas</p>

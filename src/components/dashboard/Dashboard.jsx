@@ -1,8 +1,13 @@
+import { Button } from "react-bootstrap";
 import BookItem from "../library/bookItem/BookItem";
 import Books from "../library/books/Books";
 import NewBook from "../library/newBook/NewBook";
 import { useState } from "react";
-const Dashboard = () => {
+import { Route, useNavigate } from "react-router";
+import { Routes } from "react-router";
+import BookDetails from "../library/bookDetails/BookDetails";
+const Dashboard = ({ onLogOut }) => {
+  const navigate = useNavigate();
   const books = [
     {
       id: 1,
@@ -66,15 +71,60 @@ const Dashboard = () => {
 
   const handleBookDeleted = (bookId) => {
     setBookList((prevBookList) =>
-      prevBookList.filter((book) => book.id !== bookId)
+      prevBookList.filter((book) => book.id !== bookId),
     );
+  };
+
+  const handleLogOut = () => {
+    onLogOut();
+    navigate("/login");
+  };
+
+  const handleNavigateAddBook = () => {
+    navigate("/library/add-book", { replace: true });
   };
   return (
     <div className="d-flex flex-column align-items-center">
+      <Button
+        style={{
+          position: "absolute",
+          top: 10,
+          right: 30,
+          padding: "6px 12px",
+          cursor: "pointer",
+        }}
+        variant="primary"
+        onClick={handleLogOut}
+      >
+        Cerrar sesion
+      </Button>
+      <Button
+        style={{
+          position: "absolute",
+          top: 10,
+          right: 150,
+          padding: "6px 12px",
+          cursor: "pointer",
+        }}
+        variant="success"
+        onClick={handleNavigateAddBook}
+      >
+        Agregar libro
+      </Button>
       <h2>Books champion app</h2>
       <p>¡Quiero leer libros!</p>
-      <NewBook onBookAdded={handleBookAdded} />
-      <Books books={bookList} onBookDeleted={handleBookDeleted} />
+      <Routes>
+        <Route
+          index
+          element={<Books books={bookList} onBookDeleted={handleBookDeleted} />}
+        />
+        <Route
+          path="/add-book"
+          element={<NewBook onBookAdded={handleBookAdded} />}
+        />
+        <Route path=":id" element={<BookDetails />} />
+      </Routes>
+
       {/* <Login /> */}
     </div>
   );
