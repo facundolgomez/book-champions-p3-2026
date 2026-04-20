@@ -2,8 +2,8 @@ import { Button } from "react-bootstrap";
 import BookItem from "../library/bookItem/BookItem";
 import Books from "../library/books/Books";
 import NewBook from "../library/newBook/NewBook";
-import { useState } from "react";
-import { Route, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { data, Route, useNavigate } from "react-router";
 import { Routes } from "react-router";
 import BookDetails from "../library/bookDetails/BookDetails";
 const Dashboard = ({ onLogOut }) => {
@@ -60,18 +60,37 @@ const Dashboard = ({ onLogOut }) => {
   ];
   const [bookList, setBookList] = useState(books);
   const handleBookAdded = (enteredBook) => {
-    const bookData = {
-      ...enteredBook,
-      id: Math.random(),
-    };
-    setBookList(function (prevBookList) {
-      return [bookData, ...prevBookList];
-    });
+    // const bookData = {
+    //   ...enteredBook,
+    //   id: Math.random(),
+    // };
+    // setBookList(function (prevBookList) {
+    //   return [bookData, ...prevBookList];
+    // });
+    fetch("http://localhost:3000/books", {
+      headers: {
+        "Content-type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify(enteredBook),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((err) => {
+            throw new Error(err.messagge || "Error al crear el libro");
+          });
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setBookList((prevBookList) => [data, ...prevBookList]);
+      })
+      .catch((err) => console.log(err));
   };
 
   const handleBookDeleted = (bookId) => {
     setBookList((prevBookList) =>
-      prevBookList.filter((book) => book.id !== bookId),
+      prevBookList.filter((book) => book.id !== bookId)
     );
   };
 
@@ -83,6 +102,13 @@ const Dashboard = ({ onLogOut }) => {
   const handleNavigateAddBook = () => {
     navigate("/library/add-book", { replace: true });
   };
+
+  useEffect(() => {
+    fetch("http://localhost:3000/books")
+      .then((res) => res.json())
+      .then((data) => setBookList([...data]))
+      .catch((err) => console.log(err));
+  }, []);
   return (
     <div className="d-flex flex-column align-items-center">
       <Button
