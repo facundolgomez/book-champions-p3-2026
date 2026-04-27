@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import NotFound from "./components/ui/notFound/NotFound";
 import Protected from "./components/routing/protected/Protected";
 import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const handleLogIn = () => {
@@ -22,7 +23,12 @@ function App() {
           <Route element={<Protected isSignedIn={loggedIn} />}>
             <Route
               path="/library/*"
-              element={<Dashboard onLogOut={handleLogOut} />}
+              element={
+                <>
+                  <Dashboard onLogOut={handleLogOut} />
+                  <ToastContainer />
+                </>
+              }
             />
           </Route>
           <Route path="*" element={<NotFound />} />

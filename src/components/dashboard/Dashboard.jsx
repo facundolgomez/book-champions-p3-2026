@@ -1,12 +1,15 @@
 import { Button } from "react-bootstrap";
 import BookItem from "../library/bookItem/BookItem";
 import Books from "../library/books/Books";
-import NewBook from "../library/newBook/NewBook";
+import BookForm from "../library/bookForm/BookForm";
 import { useEffect, useState } from "react";
-import { data, Route, useNavigate } from "react-router";
+import { data, Route, useLocation, useNavigate } from "react-router";
 import { Routes } from "react-router";
 import BookDetails from "../library/bookDetails/BookDetails";
+import { Bounce, toast } from "react-toastify";
+import { successToast, errorToast } from "../ui/notifications/notifications";
 const Dashboard = ({ onLogOut }) => {
+  const location = useLocation();
   const navigate = useNavigate();
   const books = [
     {
@@ -67,6 +70,7 @@ const Dashboard = ({ onLogOut }) => {
     // setBookList(function (prevBookList) {
     //   return [bookData, ...prevBookList];
     // });
+
     fetch("http://localhost:3000/books", {
       headers: {
         "Content-type": "application/json",
@@ -77,15 +81,16 @@ const Dashboard = ({ onLogOut }) => {
       .then((res) => {
         if (!res.ok) {
           return res.json().then((err) => {
-            throw new Error(err.messagge || "Error al crear el libro");
+            throw new Error(err.message || "Error al crear el libro");
           });
         }
         return res.json();
       })
       .then((data) => {
         setBookList((prevBookList) => [data, ...prevBookList]);
+        successToast(`Libro ${data.title} agregado correctamente`);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => errorToast(err.message || "Error al crear libro"));
   };
 
   const handleBookDeleted = (bookId) => {
@@ -104,11 +109,13 @@ const Dashboard = ({ onLogOut }) => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:3000/books")
-      .then((res) => res.json())
-      .then((data) => setBookList([...data]))
-      .catch((err) => console.log(err));
-  }, []);
+    if (location.pathname === "/library") {
+      fetch("http://localhost:3000/books")
+        .then((res) => res.json())
+        .then((data) => setBookList([...data]))
+        .catch((err) => console.log(err));
+    }
+  }, [location]);
   return (
     <div className="d-flex flex-column align-items-center">
       <Button
@@ -146,7 +153,7 @@ const Dashboard = ({ onLogOut }) => {
         />
         <Route
           path="/add-book"
-          element={<NewBook onBookAdded={handleBookAdded} />}
+          element={<BookForm onBookAdded={handleBookAdded} />}
         />
         <Route path=":id" element={<BookDetails />} />
       </Routes>
