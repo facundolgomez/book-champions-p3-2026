@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Button, Card, Col, Form, FormGroup, Row } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import AuthContainer from "../authContainer/AuthContainer";
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
@@ -51,43 +52,42 @@ const Login = ({ onLogin }) => {
 
   return (
     <>
-      <Card className="mt-5 mx-3 p-3 px-5 shadow">
-        <Card.Body>
-          <Row className="mb-2">
-            <h5>¡Bienvenidos a Books Champion!</h5>
+      <AuthContainer>
+        <Form onSubmit={handleSubmit}>
+          <FormGroup className="mb-4">
+            <Form.Control
+              type="email"
+              placeholder="Ingresar email"
+              onChange={handleEmailChange}
+              value={email}
+              ref={emailRef}
+              className={errors.email && "border border-danger border-3"}
+            />
+          </FormGroup>
+          <FormGroup className="mb-4">
+            <Form.Control
+              type="password"
+              placeholder="Ingresar contraseña"
+              onChange={handlePasswordChange}
+              value={password}
+              ref={passwordRef}
+              className={errors.password && "border border-danger border-3"}
+            />
+          </FormGroup>
+          <Row>
+            <Col />
+            <Col md={6} className="d-flex justify-content-end">
+              <Button variant="secondary" type="submit">
+                Iniciar sesión
+              </Button>
+            </Col>
           </Row>
-          <Form onSubmit={handleSubmit}>
-            <FormGroup className="mb-4">
-              <Form.Control
-                type="email"
-                placeholder="Ingresar email"
-                onChange={handleEmailChange}
-                value={email}
-                ref={emailRef}
-                className={errors.email && "border border-danger border-3"}
-              />
-            </FormGroup>
-            <FormGroup className="mb-4">
-              <Form.Control
-                type="password"
-                placeholder="Ingresar contraseña"
-                onChange={handlePasswordChange}
-                value={password}
-                ref={passwordRef}
-                className={errors.password && "border border-danger border-3"}
-              />
-            </FormGroup>
-            <Row>
-              <Col />
-              <Col md={6} className="d-flex justify-content-end">
-                <Button variant="secondary" type="submit">
-                  Iniciar sesión
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-        </Card.Body>
-      </Card>
+          <Row className="mt-4">
+            <p className="text-center fw-bold">¿Aun no tienes cuenta?</p>
+            <Button onClick={() => navigate("/register")}>Registrate</Button>
+          </Row>
+        </Form>
+      </AuthContainer>
       {message && <p>Debe completar los campos para iniciar sesion</p>}
     </>
   );

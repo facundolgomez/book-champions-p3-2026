@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Star, StarFill } from "react-bootstrap-icons";
 import MyModal from "../../ui/modal/MyModal";
 import { useNavigate } from "react-router";
+import { successToast, errorToast } from "../../ui/notifications/notifications";
 const BookItem = ({
   id,
   title,
@@ -36,8 +37,19 @@ const BookItem = ({
   };
 
   const handleConfirmDelete = () => {
+    //hacer la eliminacion del libro aca dentro
     setShowModal(false);
-    onBookDeleted(id);
+    fetch(`http://localhost:3000/books/${id}`, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Error en el servidor");
+        }
+        onBookDeleted(id);
+        successToast(`Libro con el id ${id} eliminado correctamente`);
+      })
+      .catch((err) => errorToast(err.message));
   };
 
   return (
@@ -64,7 +76,7 @@ const BookItem = ({
                 <StarFill key={index} className="text-warning" />
               ) : (
                 <Star key={index} className="text-warning" />
-              ),
+              )
             )}
           </div>
           <p>{pageCount} páginas</p>
