@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { Button, Card, Col, Form, FormGroup, Row } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import AuthContainer from "../authContainer/AuthContainer";
+import { errorToast } from "../../ui/notifications/notifications";
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
@@ -47,7 +48,26 @@ const Login = ({ onLogin }) => {
     alert(`El email ingresado es: ${email} y el password es ${password}`);
     setMessage(false);
     onLogin();
-    navigate("/library");
+    fetch("http://localhost:3000/login", {
+      headers: {
+        "Content-type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          return res.json().then((err) => {
+            throw new Error(err.message || "Login incorrecto");
+          });
+        }
+        return res.json();
+      })
+      .then((token) => {
+        localStorage.setItem("book-champions-token", token);
+        navigate("/library");
+      })
+      .catch((err) => errorToast(err.message));
   };
 
   return (
