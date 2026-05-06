@@ -111,7 +111,13 @@ const Dashboard = ({ onLogOut }) => {
 
   useEffect(() => {
     if (location.pathname === "/library") {
-      fetch("http://localhost:3000/books")
+      fetch("http://localhost:3000/books", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem(
+            "book-champions-token"
+          )}`,
+        },
+      })
         .then((res) => res.json())
         .then((data) => setBookList([...data]))
         .catch((err) => console.log(err));
