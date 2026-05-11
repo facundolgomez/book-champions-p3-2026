@@ -9,6 +9,8 @@ import BookDetails from "../library/bookDetails/BookDetails";
 import { Bounce } from "react-toastify";
 import { successToast, errorToast } from "../ui/notifications/notifications";
 import { addBook, getBooks } from "./dashboard.services";
+import { useContext } from "react";
+import { AutheticationContext } from "../services/auth/auth.context";
 const Dashboard = ({ onLogOut }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -82,20 +84,21 @@ const Dashboard = ({ onLogOut }) => {
         setBookList((prevBookList) => [data, ...prevBookList]);
         successToast(`Libro ${data.title} agregado correctamente`);
       },
-      (err) => errorToast(err.message),
+      (err) => errorToast(err.message)
     );
   };
+  const { handleUserLogout } = useContext(AutheticationContext);
 
   const handleBookDeleted = (bookId) => {
     setBookList((prevBookList) =>
-      prevBookList.filter((book) => book.id !== bookId),
+      prevBookList.filter((book) => book.id !== bookId)
     );
   };
 
   const handleLogOut = () => {
-    onLogOut();
+    // onLogOut();
+    handleUserLogout();
     navigate("/login");
-    localStorage.removeItem("book-champions-token");
   };
 
   const handleNavigateAddBook = () => {
@@ -106,7 +109,7 @@ const Dashboard = ({ onLogOut }) => {
     if (location.pathname === "/library") {
       getBooks(
         (data) => setBookList([...data]),
-        (err) => errorToast(err.message),
+        (err) => errorToast(err.message)
       );
     }
   }, [location]);

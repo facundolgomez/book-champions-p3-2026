@@ -1,7 +1,11 @@
 import { Navigate, Outlet } from "react-router";
+import { useContext } from "react";
+import { AutheticationContext } from "../../services/auth/auth.context";
+import { isTokenValid } from "../../auth/auth.helpers";
 
-const Protected = ({ isSignedIn }) => {
-  if (!isSignedIn) {
+const Protected = () => {
+  const { token } = useContext(AutheticationContext);
+  if (!isTokenValid(token)) {
     return <Navigate to="/login" replace />;
   }
   return <Outlet />;

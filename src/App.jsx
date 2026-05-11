@@ -6,6 +6,7 @@ import Protected from "./components/routing/protected/Protected";
 import { useState } from "react";
 import { ToastContainer } from "react-toastify";
 import Register from "./components/auth/register/Register";
+import ToggleTheme from "./components/services/theme/toggleTheme/Toggletheme";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const handleLogIn = () => {
@@ -17,13 +18,14 @@ function App() {
   };
   return (
     <div>
+      <ToggleTheme />
       <BrowserRouter>
         <ToastContainer />
         <Routes>
           <Route path="/" element={<Navigate to="login" />} />
           <Route path="/register" element={<Register />} />
-          <Route path="login" element={<Login onLogin={handleLogIn} />} />
-          <Route element={<Protected isSignedIn={loggedIn} />}>
+          <Route path="login" element={<Login /*onLogin={handleLogIn}*/ />} />
+          <Route element={<Protected /*isSignedIn={loggedIn}*/ />}>
             <Route
               path="/library/*"
               element={

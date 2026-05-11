@@ -1,11 +1,14 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 import { Button, Card, Col, Form, FormGroup, Row } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import AuthContainer from "../authContainer/AuthContainer";
 import { errorToast } from "../../ui/notifications/notifications";
 import { validateEmail, validatePassword } from "../auth.services";
+import { loginUser } from "./login.services";
 
-const Login = ({ onLogin }) => {
+import { AutheticationContext } from "../../services/auth/auth.context";
+
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(false);
@@ -13,7 +16,7 @@ const Login = ({ onLogin }) => {
     email: false,
     password: false,
   });
-
+  const { handleUserLogin } = useContext(AutheticationContext);
   const emailRef = useRef(null);
   const passwordRef = useRef(null);
 
@@ -51,27 +54,18 @@ const Login = ({ onLogin }) => {
     setErrors({ email: false, password: false });
     alert(`El email ingresado es: ${email} y el password es ${password}`);
     setMessage(false);
-    onLogin();
-    fetch("http://localhost:3000/login", {
-      headers: {
-        "Content-type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          return res.json().then((err) => {
-            throw new Error(err.message || "Login incorrecto");
-          });
-        }
-        return res.json();
-      })
-      .then((token) => {
-        localStorage.setItem("book-champions-token", token);
+    //onLogin();
+    loginUser(
+      email,
+      password,
+      (token) => {
+        handleUserLogin(token);
         navigate("/library");
-      })
-      .catch((err) => errorToast(err.message));
+      },
+      (err) => {
+        errorToast(err.message);
+      }
+    );
   };
 
   return (
