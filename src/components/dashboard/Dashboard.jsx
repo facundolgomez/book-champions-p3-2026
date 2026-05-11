@@ -3,11 +3,12 @@ import BookItem from "../library/bookItem/BookItem";
 import Books from "../library/books/Books";
 import BookForm from "../library/bookForm/BookForm";
 import { useEffect, useState } from "react";
-import { data, Route, useLocation, useNavigate } from "react-router";
+import { Route, useLocation, useNavigate } from "react-router";
 import { Routes } from "react-router";
 import BookDetails from "../library/bookDetails/BookDetails";
-import { Bounce, toast } from "react-toastify";
+import { Bounce } from "react-toastify";
 import { successToast, errorToast } from "../ui/notifications/notifications";
+import { addBook, getBooks } from "./dashboard.services";
 const Dashboard = ({ onLogOut }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -70,32 +71,24 @@ const Dashboard = ({ onLogOut }) => {
     // setBookList(function (prevBookList) {
     //   return [bookData, ...prevBookList];
     // });
+    if (!enteredBook.title || !enteredBook.author) {
+      errorToast("El autor y titulo son requeridos");
+      return;
+    }
 
-    fetch("http://localhost:3000/books", {
-      headers: {
-        "Content-type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(enteredBook),
-    })
-      .then((res) => {
-        if (!res.ok) {
-          return res.json().then((err) => {
-            throw new Error(err.message || "Error al crear el libro");
-          });
-        }
-        return res.json();
-      })
-      .then((data) => {
+    addBook(
+      enteredBook,
+      (data) => {
         setBookList((prevBookList) => [data, ...prevBookList]);
         successToast(`Libro ${data.title} agregado correctamente`);
-      })
-      .catch((err) => errorToast(err.message || "Error al crear libro"));
+      },
+      (err) => errorToast(err.message),
+    );
   };
 
   const handleBookDeleted = (bookId) => {
     setBookList((prevBookList) =>
-      prevBookList.filter((book) => book.id !== bookId)
+      prevBookList.filter((book) => book.id !== bookId),
     );
   };
 
@@ -111,16 +104,10 @@ const Dashboard = ({ onLogOut }) => {
 
   useEffect(() => {
     if (location.pathname === "/library") {
-      fetch("http://localhost:3000/books", {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(
-            "book-champions-token"
-          )}`,
-        },
-      })
-        .then((res) => res.json())
-        .then((data) => setBookList([...data]))
-        .catch((err) => console.log(err));
+      getBooks(
+        (data) => setBookList([...data]),
+        (err) => errorToast(err.message),
+      );
     }
   }, [location]);
   return (

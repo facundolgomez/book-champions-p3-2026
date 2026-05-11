@@ -3,6 +3,7 @@ import { Button, Card, Col, Form, FormGroup, Row } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import AuthContainer from "../authContainer/AuthContainer";
 import { errorToast } from "../../ui/notifications/notifications";
+import { validateEmail, validatePassword } from "../auth.services";
 
 const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
@@ -31,13 +32,16 @@ const Login = ({ onLogin }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (!emailRef.current.value.length) {
+    if (!emailRef.current.value.length || !validateEmail(email)) {
       setErrors({ email: true, password: false });
       alert("Email vacio !!");
       emailRef.current.focus();
       setMessage(true);
       return;
-    } else if (!password.length || password.length < 7) {
+    } else if (
+      !password.length ||
+      !validatePassword(password, 7, null, true, true)
+    ) {
       setErrors({ email: false, password: true });
       alert("Password vacio!!");
       passwordRef.current.focus();
