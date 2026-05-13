@@ -7,6 +7,7 @@ import { validateEmail, validatePassword } from "../auth.services";
 import { loginUser } from "./login.services";
 
 import { AutheticationContext } from "../../services/auth/auth.context";
+import { useTranslate } from "../../services/translation/useTranslate";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -68,6 +69,8 @@ const Login = () => {
     );
   };
 
+  const translate = useTranslate();
+
   return (
     <>
       <AuthContainer>
@@ -96,7 +99,7 @@ const Login = () => {
             <Col />
             <Col md={6} className="d-flex justify-content-end">
               <Button variant="secondary" type="submit">
-                Iniciar sesión
+                {`${translate("login")}`}
               </Button>
             </Col>
           </Row>
